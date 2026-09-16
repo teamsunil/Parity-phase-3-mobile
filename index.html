@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PARITY — Professional</title>
+<style>
+:root{
+  --navy:#0f1b2d;
+  --navy-2:#1c2c44;
+  --charcoal:#333c47;
+  --muted:#6b7480;
+  --border:#e4e7ec;
+  --bg:#f4f5f6;
+  --surface:#fbfbfc;
+  --card:#ffffff;
+  --accent:#3a5a8c;
+  --accent-light:#eaf0f9;
+  --good:#1f7a4d;
+  --good-bg:#eaf6f0;
+  --warn:#a15c00;
+  --warn-bg:#fdf3e3;
+  --bad:#a12222;
+  --bad-bg:#fbe9e9;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  background:#05080f;
+  color:var(--navy);
+  font-size:14px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;}
+h1,h2,h3{margin:0;color:var(--navy);}
+p{margin:0;}
+a{color:inherit;text-decoration:none;}
+.hidden{display:none !important;}
+
+/* ---------- Phone frame ---------- */
+#stage{
+  min-height:100vh;width:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+#phone{
+  position:relative;
+  width:100%;
+  background:var(--surface);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  height:100vh;
+}
+@media (min-width:640px){
+  #stage{padding:32px 0;}
+  #phone{
+    max-width:430px;height:900px;max-height:92vh;
+    border-radius:2.5rem;border:10px solid var(--navy-2);
+    box-shadow:0 30px 60px rgba(0,0,0,.5);
+  }
+}
+#screen-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#screen-body::-webkit-scrollbar{width:0;height:0;}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:14px 20px;border-radius:12px;border:1px solid transparent;
+  font-weight:600;font-size:15px;cursor:pointer;transition:background .15s ease,opacity .15s ease;
+}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--navy-2);}
+.btn-primary:disabled{background:var(--muted);cursor:not-allowed;opacity:.7;}
+.btn-secondary{background:#fff;color:var(--navy);border-color:var(--border);}
+.btn-secondary:hover{background:var(--bg);}
+.btn-danger{background:#fff;color:var(--bad);border-color:#f0c7c7;}
+.btn-danger:hover{background:var(--bad-bg);}
+.btn-row{display:flex;gap:12px;}
+.btn-row .btn{width:auto;}
+.btn-row .btn.grow-1{flex:1;}
+.btn-row .btn.grow-2{flex:2;}
+.btn-link{background:none;border:none;color:var(--accent);font-weight:600;font-size:14px;padding:0;cursor:pointer;}
+
+/* ---------- Cards ---------- */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;}
+.card-dark{background:var(--navy);border-color:var(--navy);color:#fff;}
+.card-flat{padding:0;overflow:hidden;}
+.card-row{display:flex;align-items:center;justify-content:between;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);}
+.card-row:last-child{border-bottom:none;}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position:sticky;top:0;z-index:5;background:rgba(251,251,252,.95);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--border);
+  padding:16px 20px;display:flex;align-items:center;gap:12px;
+}
+.topbar h1{font-size:17px;font-weight:600;}
+.back-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;background:none;cursor:pointer;border-radius:50%;color:var(--navy);margin-left:-6px;}
+.back-btn:hover{background:var(--bg);}
+
+/* ---------- Bottom nav ---------- */
+#bottom-nav{
+  position:sticky;bottom:0;z-index:5;background:rgba(255,255,255,.97);border-top:1px solid var(--border);
+  display:flex;padding:0 8px;
+}
+.nav-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0 12px;
+  background:none;border:none;cursor:pointer;color:var(--muted);position:relative;
+}
+.nav-item.active{color:var(--navy);}
+.nav-item svg{width:22px;height:22px;}
+.nav-item span{font-size:10px;font-weight:500;}
+.nav-badge{
+  position:absolute;top:2px;right:calc(50% - 18px);min-width:14px;height:14px;padding:0 3px;
+  background:var(--bad);color:#fff;border-radius:8px;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ---------- Stat card ---------- */
+.stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
+.stat-value{font-size:32px;font-weight:700;letter-spacing:-0.02em;margin-top:6px;color:var(--navy);}
+.card-dark .stat-label{color:rgba(255,255,255,.6);}
+.card-dark .stat-value{color:#fff;}
+.stat-sub{font-size:13px;color:var(--muted);margin-top:6px;}
+.card-dark .stat-sub{color:rgba(255,255,255,.7);}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* ---------- Progress bar ---------- */
+.progress-head{display:flex;justify-content:space-between;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+.progress-track{height:6px;background:var(--bg);border-radius:8px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--navy);border-radius:8px;transition:width .25s ease;}
+
+/* ---------- Forms ---------- */
+.field-label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:6px;}
+.text-input, select.text-input{
+  width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--border);
+  background:#fff;font-size:16px;color:var(--navy);outline:none;transition:border-color .15s ease;
+  appearance:none;-webkit-appearance:none;
+}
+.text-input:focus{border-color:var(--navy);}
+.currency-field{display:flex;align-items:center;border:1px solid var(--border);border-radius:12px;background:#fff;padding:0 16px;}
+.currency-field:focus-within{border-color:var(--navy);}
+.currency-field span{color:var(--muted);font-size:16px;margin-right:4px;}
+.currency-field input{border:none;outline:none;background:none;width:100%;padding:14px 0;font-size:16px;color:var(--navy);}
+.select-wrap{position:relative;}
+.select-wrap svg{position:absolute;right:16px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--muted);}
+.option-btn{
+  display:flex;align-items:center;justify-content:space-between;width:100%;text-align:left;
+  padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:#fff;
+  cursor:pointer;margin-bottom:10px;font-size:15px;color:var(--charcoal);transition:background .15s ease,border-color .15s ease;
+}
+.option-btn:hover{background:var(--bg);}
+.option-btn.selected{border-color:var(--navy);background:var(--bg);font-weight:600;color:var(--navy);}
+.radio-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.option-btn.selected .radio-dot{border-color:var(--navy);}
+.radio-dot-inner{width:10px;height:10px;border-radius:50%;background:var(--navy);}
+.check-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.option-btn.selected .check-box{border-color:var(--navy);background:var(--navy);}
+.yn-row{display:flex;gap:12px;margin-bottom:12px;}
+.yn-btn{flex:1;padding:14px;border-radius:12px;border:1px solid var(--border);background:#fff;font-weight:600;cursor:pointer;text-transform:capitalize;color:var(--charcoal);}
+.yn-btn.selected{background:var(--navy);border-color:var(--navy);color:#fff;}
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-top:4px;}
+.checkbox-row input{margin-top:3px;width:16px;height:16px;accent-color:var(--navy);}
+.switch{width:44px;height:26px;border-radius:16px;border:none;padding:3px;cursor:pointer;transition:background .15s ease;flex-shrink:0;}
+.switch.on{background:var(--navy);}
+.switch.off{background:var(--border);}
+.switch-knob{width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .15s ease;display:block;}
+.switch.on .switch-knob{transform:translateX(18px);}
+
+/* ---------- Notification list ---------- */
+.notif-item{display:flex;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);cursor:pointer;text-align:left;background:none;border-left:none;border-right:none;border-top:none;width:100%;}
+.notif-item:hover{background:var(--bg);}
+.notif-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0;}
+.notif-dot.unread{background:var(--accent);}
+.notif-title{font-size:15px;color:var(--navy);}
+.notif-title.unread{font-weight:700;}
+.notif-title.read{font-weight:500;color:var(--charcoal);}
+.notif-body{font-size:13px;color:var(--muted);margin-top:2px;}
+.notif-date{font-size:12px;color:var(--muted);margin-top:6px;}
+
+/* ---------- Misc ---------- */
+.px{padding-left:20px;padding-right:20px;}
+.py-top{padding-top:16px;}
+.stack{display:flex;flex-direction:column;gap:16px;}
+.text-muted{color:var(--muted);}
+.text-sm{font-size:13px;}
+.center-col{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.avatar{width:56px;height:56px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;flex-shrink:0;}
+.chip{width:44px;height:44px;border-radius:14px;background:var(--navy);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;}
+.spinner{width:40px;height:40px;border-radius:50%;border:3px solid rgba(15,27,45,.15);border-top-color:var(--navy);animation:spin .8s linear infinite;}
+.spinner.on-dark{border-color:rgba(255,255,255,.3);border-top-color:#fff;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.success-badge{width:56px;height:56px;border-radius:50%;background:var(--good-bg);display:flex;align-items:center;justify-content:center;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="phone">
+    <div id="screen-body"></div>
+    <div id="bottom-nav-slot"></div>
+  </div>
+</div>
+<script>
+/* ===================== Mock Data ===================== */
+const USER = {
+  firstName: 'James', lastName: 'Carter', email: 'james.carter@example.com',
+  jobTitle: 'Investment Director', seniority: 'Director', location: 'London', sector: 'Private Equity',
+};
+
+const SEED_HISTORY = [
+  { year: 2024, base: 170000, bonus: 100000, deferral: 0, ltip: 0, carry: 'Not Reported', coInvestment: 'Not Reported', total: 270000 },
+  { year: 2025, base: 178000, bonus: 107000, deferral: 0, ltip: 0, carry: 'Not Reported', coInvestment: 'Not Reported', total: 285000 },
+  { year: 2026, base: 185000, bonus: 120000, deferral: 0, ltip: 0, carry: 'Not Reported', coInvestment: 'Not Reported', total: 305000 },
+];
+
+const MARKET_MEDIAN = 292000;
+const PERCENTILE = 68;
+const PEER_GROUP = { role: 'Investment Directors', location: 'London', sector: 'Private Equity' };
+const DATA_PERIOD = 'January 2026 – August 2026';
+const SAMPLE_SIZE_LABEL = '210 matched submissions';
+const METHODOLOGY = 'Your compensation is benchmarked against a peer set of professionals matched on role, seniority, location and sector, drawn from PARITY’s aggregated, anonymised submission data.';
+const BENCHMARK_DIMENSIONS = [
+  { label: 'Role', value: 'Investment Director' },
+  { label: 'Location', value: 'London' },
+  { label: 'Seniority', value: 'Director' },
+  { label: 'Strategy', value: 'Buyout' },
+];
+
+const SENIORITY_OPTIONS = ['Analyst', 'Associate', 'Vice President', 'Director', 'Managing Director', 'Partner'];
+const LOCATION_OPTIONS = ['London', 'New York', 'Hong Kong', 'Singapore', 'Frankfurt', 'Dubai'];
+const EMPLOYER_TYPE_OPTIONS = ['Private Equity Firm', 'Hedge Fund', 'Asset Manager', 'Investment Bank', 'Venture Capital Firm'];
+const STRATEGY_OPTIONS = ['Buyout', 'Growth Equity', 'Venture Capital', 'Credit', 'Real Estate', 'Infrastructure'];
+const ASSET_CLASS_OPTIONS = ['Private Equity', 'Private Credit', 'Real Assets', 'Public Equities', 'Fixed Income', 'Infrastructure'];
+const BENEFITS_OPTIONS = ['Defined Contribution Pension', 'Private Healthcare', 'Life Insurance', 'Income Protection', 'Car Allowance', 'Wellness Allowance'];
+
+const QUESTIONS = [
+  { id: 'jobTitle', label: 'Job Title', type: 'text', required: true },
+  { id: 'seniority', label: 'Seniority', type: 'radio', options: SENIORITY_OPTIONS, required: true },
+  { id: 'location', label: 'Location', type: 'dropdown', options: LOCATION_OPTIONS, required: true },
+  { id: 'employer', label: 'Employer', type: 'text', required: true },
+  { id: 'employerType', label: 'Employer Type', type: 'radio', options: EMPLOYER_TYPE_OPTIONS, required: true },
+  { id: 'investmentStrategy', label: 'Investment Strategy', type: 'dropdown', options: STRATEGY_OPTIONS, required: true },
+  { id: 'assetClass', label: 'Asset Class', type: 'multiselect', options: ASSET_CLASS_OPTIONS, required: true },
+  { id: 'yearsExperience', label: 'Years of Experience', type: 'number', required: true },
+  { id: 'baseSalary', label: 'Base Salary', type: 'currency', required: true },
+  { id: 'bonus', label: 'Bonus', type: 'currency', required: true },
+  { id: 'deferral', label: 'Deferral', type: 'currency', required: false },
+  { id: 'ltip', label: 'LTIP', type: 'currency', required: false },
+  { id: 'carry', label: 'Carry', type: 'yesNoDetail', helpText: 'Do you receive carried interest?', required: false },
+  { id: 'coInvestment', label: 'Co-investment', type: 'yesNoDetail', helpText: 'Do you participate in co-investment opportunities?', required: false },
+  { id: 'benefits', label: 'Benefits / Pension', type: 'multiselect', options: BENEFITS_OPTIONS, required: false },
+];
+
+const SEED_NOTIFICATIONS = [
+  { id: 'n1', title: 'Your annual benchmark is ready', body: 'Your 2026 PARITY benchmark is ready to be updated with your latest compensation.', date: '12 Sep 2026', read: false, kind: 'update-ready' },
+  { id: 'n2', title: 'Your latest results are available', body: 'Your compensation benchmark results have been refreshed against the latest market data.', date: '02 Sep 2026', read: false, kind: 'results' },
+  { id: 'n3', title: 'Your annual update is due', body: 'Please review and confirm your compensation details for this year’s benchmark.', date: '28 Aug 2026', read: true, kind: 'update-due' },
+  { id: 'n4', title: 'Your benchmark has been updated', body: 'Your compensation benchmark was successfully updated with your latest submission.', date: '14 Aug 2026', read: true, kind: 'updated' },
+];
+
+/* ===================== State ===================== */
+const state = {
+  screen: 'splash',
+  authUser: null,
+  q: { stepIndex: 0, answers: {} },
+  comp: {
+    current: { ...SEED_HISTORY[2] },
+    history: SEED_HISTORY.map((r) => ({ ...r })),
+    updateDraft: null,
+    lastYoY: 0,
+    lastUpdated: 'September 2026',
+  },
+  notifications: SEED_NOTIFICATIONS.map((n) => ({ ...n })),
+  profilePrefs: { annual: true, results: true, market: false },
+  security: { faceId: true },
+};
+
+const BOTTOM_NAV_SCREENS = ['home', 'results', 'breakdown', 'benchmarkDetail', 'history', 'notifications', 'profile'];
+const PUBLIC_SCREENS = ['splash', 'welcome', 'login', 'signup', 'forgotPassword'];
+
+function navigate(screen) {
+  if (!PUBLIC_SCREENS.includes(screen) && !state.authUser) {
+    screen = 'login';
+  }
+  state.screen = screen;
+  render();
+  const body = document.getElementById('screen-body');
+  if (body) body.scrollTop = 0;
+}
+
+/* ===================== Formatting helpers ===================== */
+function fmtCurrency(n) {
+  return '£' + Math.round(n).toLocaleString('en-GB');
+}
+function fmtCurrencyOrNR(v) {
+  return v === 'Not Reported' ? 'Not Reported' : fmtCurrency(v);
+}
+function calcYoY(prev, next) {
+  if (!prev) return 0;
+  return ((next - prev) / prev) * 100;
+}
+function fmtPercent(v) {
+  return (v > 0 ? '+' : '') + v.toFixed(1) + '%';
+}
+function ordinal(n) {
+  const r = n % 100;
+  if (r >= 11 && r <= 13) return n + 'th';
+  switch (n % 10) {
+    case 1: return n + 'st';
+    case 2: return n + 'nd';
+    case 3: return n + 'rd';
+    default: return n + 'th';
+  }
+}
+function esc(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* ===================== UI builder helpers ===================== */
+function icon(name) {
+  const icons = {
+    back: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    chevronRight: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    chevronDown: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    check: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    checkBig: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="var(--good)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    home: '<path d="M4 11.5 12 4l8 7.5M6 9.5V20h12V9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    benchmark: '<path d="M4 20V10M10 20V4M16 20v-7M4 20h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    history: '<path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    alerts: '<path d="M6 8a6 6 0 1 1 12 0c0 4 1.5 5.5 1.5 5.5H4.5S6 12 6 8ZM9.5 17a2.5 2.5 0 0 0 5 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>',
+    profile: '<circle cx="12" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-3.6 4-5.5 7.5-5.5s6.3 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+    arrowRight: '<path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+  };
+  return icons[name] || '';
+}
+
+function topBar(title, opts = {}) {
+  const showBack = opts.showBack !== false;
+  const onBack = opts.onBack || "history.back()";
+  return `
+    <div class="topbar">
+      ${showBack ? `<button class="back-btn" onclick="${onBack}">${icon('back')}</button>` : ''}
+      <h1>${esc(title)}</h1>
+    </div>`;
+}
+
+function card(inner, opts = {}) {
+  const cls = ['card'];
+  if (opts.dark) cls.push('card-dark');
+  if (opts.flat) cls.push('card-flat');
+  return `<div class="${cls.join(' ')}"${opts.style ? ` style="${opts.style}"` : ''}>${inner}</div>`;
+}
+
+function statCard(label, value, opts = {}) {
+  return card(`
+    <p class="stat-label">${esc(label)}</p>
+    <p class="stat-value">${esc(value)}</p>
+    ${opts.sublabel ? `<p class="stat-sub">${esc(opts.sublabel)}</p>` : ''}
+  `, { dark: opts.accent });
+}
+
+function button(label, opts = {}) {
+  const variant = opts.variant || 'primary';
+  const cls = `btn btn-${variant}`;
+  const disabled = opts.disabled ? 'disabled' : '';
+  const grow = opts.grow ? `grow-${opts.grow}` : '';
+  return `<button class="${cls} ${grow}" ${disabled} onclick="${opts.onclick}">${label}</button>`;
+}
+
+function progressBar(current, total) {
+  const pct = Math.round((current / total) * 100);
+  return `
+    <div>
+      <div class="progress-head"><span>Question ${current} of ${total}</span><span>${pct}%</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>`;
+}
+
+let navHistory = [];
+function pushHistory(screen) { navHistory.push(screen); }
+
+/* ===================== Bottom nav ===================== */
+function renderBottomNav() {
+  const slot = document.getElementById('bottom-nav-slot');
+  if (!BOTTOM_NAV_SCREENS.includes(state.screen)) { slot.innerHTML = ''; return; }
+  const unread = state.notifications.filter((n) => !n.read).length;
+  const items = [
+    { screen: 'home', label: 'Home', icon: 'home' },
+    { screen: 'results', label: 'Benchmark', icon: 'benchmark' },
+    { screen: 'history', label: 'History', icon: 'history' },
+    { screen: 'notifications', label: 'Alerts', icon: 'alerts' },
+    { screen: 'profile', label: 'Profile', icon: 'profile' },
+  ];
+  slot.innerHTML = `<nav id="bottom-nav">${items.map((item) => `
+    <button class="nav-item ${state.screen === item.screen ? 'active' : ''}" onclick="navigate('${item.screen}')">
+      <span style="position:relative;display:inline-flex;">
+        <svg viewBox="0 0 24 24" fill="none">${icon(item.icon)}</svg>
+        ${item.screen === 'notifications' && unread > 0 ? `<span class="nav-badge">${unread}</span>` : ''}
+      </span>
+      <span>${item.label}</span>
+    </button>`).join('')}</nav>`;
+}
+
+/* ===================== Root render ===================== */
+function render() {
+  const body = document.getElementById('screen-body');
+  const renderer = SCREENS[state.screen];
+  body.innerHTML = renderer ? renderer() : '<p>Not found</p>';
+  renderBottomNav();
+  wireDynamicInputs();
+}
+
+function wireDynamicInputs() {
+  // no-op placeholder for future non-inline listener wiring
+}
+/* ===================== Charts ===================== */
+function distributionChartSVG(percentile) {
+  const W = 320, H = 140, BASELINE = 108, PAD = 16;
+  const usableW = W - PAD * 2;
+  function gaussian(x, mean, sigma) { return Math.exp(-((x - mean) ** 2) / (2 * sigma ** 2)); }
+  const pts = [];
+  for (let i = 0; i <= 60; i++) {
+    const pct = (i / 60) * 100;
+    const x = PAD + (pct / 100) * usableW;
+    const y = BASELINE - gaussian(pct, 50, 18) * 82;
+    pts.push([x, y]);
+  }
+  const polyline = pts.map((p) => p.join(',')).join(' ');
+  const markerX = PAD + (percentile / 100) * usableW;
+  const markerY = BASELINE - gaussian(percentile, 50, 18) * 82;
+  const cutoff = Math.max(1, Math.round((percentile / 100) * pts.length));
+  const areaPts = pts.slice(0, cutoff);
+  const areaPath = `M ${PAD},${BASELINE} L ${areaPts.map((p) => p.join(',')).join(' L ')} L ${markerX},${BASELINE} Z`;
+  const ticks = [0, 25, 50, 75, 100].map((t) => {
+    const x = PAD + (t / 100) * usableW;
+    return `<text x="${x}" y="${BASELINE + 16}" text-anchor="middle" font-size="9" fill="var(--muted)">${t}</text>`;
+  }).join('');
+  return `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;" role="img" aria-label="${percentile}th percentile distribution">
+      <path d="${areaPath}" fill="var(--accent-light)"/>
+      <polyline points="${polyline}" fill="none" stroke="var(--navy-2)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      <line x1="${PAD}" y1="${BASELINE}" x2="${W - PAD}" y2="${BASELINE}" stroke="var(--border)" stroke-width="1"/>
+      <line x1="${markerX}" y1="${BASELINE}" x2="${markerX}" y2="${markerY}" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <circle cx="${markerX}" cy="${markerY}" r="4" fill="var(--accent)"/>
+      <text x="${markerX}" y="${markerY - 10}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--navy)">${percentile}th percentile</text>
+      ${ticks}
+    </svg>`;
+}
+
+function trendLineChartSVG(history) {
+  const W = 300, H = 150, PADX = 30, PADT = 32, PADB = 30;
+  const values = history.map((d) => d.total);
+  const rawMin = Math.min(...values), rawMax = Math.max(...values);
+  const range = rawMax - rawMin || 1;
+  const min = rawMin - range * 0.15, max = rawMax + range * 0.15;
+  const uw = W - PADX * 2, uh = H - PADT - PADB;
+  const pts = history.map((d, i) => {
+    const x = history.length === 1 ? W / 2 : PADX + (i / (history.length - 1)) * uw;
+    const y = PADT + uh - ((d.total - min) / (max - min)) * uh;
+    return { x, y, record: d };
+  });
+  const polyline = pts.map((p) => `${p.x},${p.y}`).join(' ');
+  const dots = pts.map((p) => `
+      <circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--navy)"/>
+      <text x="${p.x}" y="${p.y - 12}" text-anchor="middle" font-size="10.5" font-weight="600" fill="var(--navy)">${fmtCurrency(p.record.total)}</text>
+      <text x="${p.x}" y="${H - PADB + 18}" text-anchor="middle" font-size="10.5" fill="var(--muted)">${p.record.year}</text>`).join('');
+  return `
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;" role="img" aria-label="Compensation history trend">
+      <line x1="${PADX}" y1="${H - PADB}" x2="${W - PADX}" y2="${H - PADB}" stroke="var(--border)" stroke-width="1"/>
+      <polyline points="${polyline}" fill="none" stroke="var(--navy-2)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${dots}
+    </svg>`;
+}
+
+function comparisonBarsHTML(items) {
+  const max = Math.max(...items.map((i) => i.value));
+  return `<div class="stack" style="gap:16px;">${items.map((item) => {
+    const pct = Math.max(6, (item.value / max) * 100);
+    return `
+      <div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:13px;font-weight:500;color:var(--charcoal);">${esc(item.label)}</span>
+          <span style="font-size:13px;font-weight:600;color:var(--navy);">${fmtCurrency(item.value)}</span>
+        </div>
+        <div style="height:10px;background:var(--bg);border-radius:8px;overflow:hidden;">
+          <div style="height:100%;border-radius:8px;width:${pct}%;background:${item.highlight ? 'var(--navy)' : 'rgba(58,90,140,.55)'};"></div>
+        </div>
+      </div>`;
+  }).join('')}</div>`;
+}
+
+/* ===================== Questionnaire control rendering ===================== */
+function renderQuestionControl(q) {
+  const val = state.q.answers[q.id];
+  switch (q.type) {
+    case 'text':
+      return `<input class="text-input" type="text" value="${esc(val || '')}" placeholder="Enter ${q.label.toLowerCase()}" oninput="setAnswer('${q.id}', this.value)">`;
+    case 'number':
+      return `<input class="text-input" type="number" min="0" value="${val ?? ''}" oninput="setAnswer('${q.id}', this.value === '' ? undefined : Number(this.value))">`;
+    case 'currency':
+      return `
+        <div class="currency-field">
+          <span>£</span>
+          <input type="number" min="0" value="${val ?? ''}" placeholder="0" oninput="setAnswer('${q.id}', this.value === '' ? undefined : Number(this.value))">
+        </div>`;
+    case 'dropdown':
+      return `
+        <div class="select-wrap">
+          <select class="text-input" onchange="setAnswer('${q.id}', this.value)">
+            <option value="" ${!val ? 'selected' : ''} disabled>Select an option</option>
+            ${q.options.map((o) => `<option value="${esc(o)}" ${val === o ? 'selected' : ''}>${esc(o)}</option>`).join('')}
+          </select>
+          ${icon('chevronDown')}
+        </div>`;
+    case 'radio':
+      return q.options.map((o) => `
+        <button class="option-btn ${val === o ? 'selected' : ''}" onclick="setAnswer('${q.id}', '${esc(o).replace(/'/g, "\\'")}')">
+          <span>${esc(o)}</span>
+          <span class="radio-dot">${val === o ? '<span class="radio-dot-inner"></span>' : ''}</span>
+        </button>`).join('');
+    case 'multiselect': {
+      const arr = Array.isArray(val) ? val : [];
+      return q.options.map((o) => `
+        <button class="option-btn ${arr.includes(o) ? 'selected' : ''}" onclick="toggleMultiAnswer('${q.id}', '${esc(o).replace(/'/g, "\\'")}')">
+          <span>${esc(o)}</span>
+          <span class="check-box">${arr.includes(o) ? icon('check') : ''}</span>
+        </button>`).join('');
+    }
+    case 'yesNoDetail': {
+      const v = val || { choice: '', detail: '' };
+      return `
+        <div class="yn-row">
+          <button class="yn-btn ${v.choice === 'yes' ? 'selected' : ''}" onclick="setYesNo('${q.id}','yes')">Yes</button>
+          <button class="yn-btn ${v.choice === 'no' ? 'selected' : ''}" onclick="setYesNo('${q.id}','no')">No</button>
+        </div>
+        ${v.choice === 'yes' ? `<input class="text-input" type="text" placeholder="Add detail (optional)" value="${esc(v.detail || '')}" oninput="setYesNoDetail('${q.id}', this.value)">` : ''}`;
+    }
+    default:
+      return '';
+  }
+}
+
+function isAnswerValid(q) {
+  if (!q.required) return true;
+  const v = state.q.answers[q.id];
+  switch (q.type) {
+    case 'text': case 'dropdown': case 'radio':
+      return typeof v === 'string' && v.trim().length > 0;
+    case 'multiselect':
+      return Array.isArray(v) && v.length > 0;
+    case 'number': case 'currency':
+      return typeof v === 'number' && !Number.isNaN(v) && v >= 0;
+    case 'yesNoDetail':
+      return !!v && v.choice !== '';
+    default: return true;
+  }
+}
+
+function setAnswer(id, value) {
+  state.q.answers[id] = value;
+  const nextBtn = document.getElementById('q-next-btn');
+  if (nextBtn) nextBtn.disabled = !isAnswerValid(QUESTIONS[state.q.stepIndex]);
+  const controlHost = document.getElementById('q-control');
+  if (controlHost && (QUESTIONS[state.q.stepIndex].type === 'radio' || QUESTIONS[state.q.stepIndex].type === 'dropdown')) {
+    controlHost.innerHTML = renderQuestionControl(QUESTIONS[state.q.stepIndex]);
+  }
+}
+function toggleMultiAnswer(id, option) {
+  const arr = Array.isArray(state.q.answers[id]) ? state.q.answers[id].slice() : [];
+  const idx = arr.indexOf(option);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(option);
+  state.q.answers[id] = arr;
+  document.getElementById('q-control').innerHTML = renderQuestionControl(QUESTIONS[state.q.stepIndex]);
+  document.getElementById('q-next-btn').disabled = !isAnswerValid(QUESTIONS[state.q.stepIndex]);
+}
+function setYesNo(id, choice) {
+  const prevDetail = (state.q.answers[id] && state.q.answers[id].detail) || '';
+  state.q.answers[id] = { choice, detail: choice === 'yes' ? prevDetail : '' };
+  document.getElementById('q-control').innerHTML = renderQuestionControl(QUESTIONS[state.q.stepIndex]);
+}
+function setYesNoDetail(id, detail) {
+  state.q.answers[id].detail = detail;
+}
+
+function formatAnswerForReview(q) {
+  const v = state.q.answers[q.id];
+  if (v === undefined || v === '' || (Array.isArray(v) && v.length === 0)) return 'Not answered';
+  if (q.type === 'currency') return fmtCurrency(v);
+  if (q.type === 'number') return String(v);
+  if (Array.isArray(v)) return v.join(', ');
+  if (q.type === 'yesNoDetail') {
+    if (v.choice === 'no') return 'No';
+    if (v.choice === 'yes') return v.detail ? `Yes — ${v.detail}` : 'Yes';
+    return 'Not answered';
+  }
+  return String(v);
+}
+
+/* ===================== Questionnaire nav ===================== */
+function startBenchmark() {
+  state.q = { stepIndex: 0, answers: {} };
+  navigate('questionnaire');
+}
+function qNext() {
+  if (state.q.stepIndex === QUESTIONS.length - 1) { navigate('reviewAnswers'); return; }
+  state.q.stepIndex++;
+  render();
+}
+function qBack() {
+  if (state.q.stepIndex === 0) { navigate('benchmarkStart'); return; }
+  state.q.stepIndex--;
+  render();
+}
+function qEdit(index) {
+  state.q.stepIndex = index;
+  navigate('questionnaire');
+}
+
+function numberOrZero(v) { return typeof v === 'number' && !Number.isNaN(v) ? v : 0; }
+function yesNoToRecordValue(v) { return v && v.choice === 'yes' ? 0 : 'Not Reported'; }
+
+function submitBenchmark() {
+  const a = state.q.answers;
+  const year = state.comp.current.year;
+  const base = numberOrZero(a.baseSalary), bonus = numberOrZero(a.bonus);
+  const deferral = numberOrZero(a.deferral), ltip = numberOrZero(a.ltip);
+  const record = {
+    year, base, bonus, deferral, ltip,
+    carry: yesNoToRecordValue(a.carry),
+    coInvestment: yesNoToRecordValue(a.coInvestment),
+    total: base + bonus + deferral + ltip,
+  };
+  state.comp.current = record;
+  state.comp.history = state.comp.history.filter((r) => r.year !== year).concat([record]).sort((x, y) => x.year - y.year);
+  navigate('submitting');
+  setTimeout(() => navigate('results'), 1400);
+}
+
+/* ===================== Annual update flow ===================== */
+function startUpdateDraft() {
+  state.comp.updateDraft = { ...state.comp.current, year: state.comp.current.year + 1 };
+}
+function setDraftField(field, value) {
+  const d = state.comp.updateDraft;
+  d[field] = value;
+  d.total = d.base + d.bonus + d.deferral + d.ltip;
+  render();
+}
+function toggleDraftNotReported(field) {
+  const d = state.comp.updateDraft;
+  d[field] = d[field] === 'Not Reported' ? 0 : 'Not Reported';
+  render();
+}
+function submitUpdate() {
+  const draft = state.comp.updateDraft;
+  const prevTotal = state.comp.current.total;
+  state.comp.history = state.comp.history.filter((r) => r.year !== draft.year).concat([draft]).sort((x, y) => x.year - y.year);
+  state.comp.current = draft;
+  state.comp.lastYoY = calcYoY(prevTotal, draft.total);
+  state.comp.lastUpdated = 'September ' + draft.year;
+  navigate('updateSubmitting');
+  setTimeout(() => navigate('updateConfirmation'), 1400);
+}
+
+/* ===================== Auth ===================== */
+function doLogin(email) {
+  state.authUser = { ...USER, email: email || USER.email };
+  navigate('home');
+}
+function doSignUp(fields) {
+  state.authUser = { ...USER, firstName: fields.firstName, lastName: fields.lastName, email: fields.email };
+  navigate('home');
+}
+function doSignOut() {
+  navigate('welcome');
+  setTimeout(() => { state.authUser = null; }, 0);
+}
+
+/* ===================== Notifications ===================== */
+function openNotification(id, kind) {
+  const n = state.notifications.find((x) => x.id === id);
+  if (n) n.read = true;
+  if (kind === 'update-ready' || kind === 'update-due') navigate('updateIntro');
+  else if (kind === 'results') navigate('results');
+  else if (kind === 'updated') navigate('history');
+  else render();
+}
+const ui = { loginError: '', signupError: '', forgotSent: false, forgotEmail: '' };
+
+/* ===================== Auth screens ===================== */
+function validateLogin(email, password) {
+  if (!email.trim() || !email.includes('@')) return 'Please enter a valid email address.';
+  if (!password) return 'Please enter your password.';
+  return null;
+}
+function validateSignUp(f) {
+  if (!f.firstName.trim() || !f.lastName.trim()) return 'Please enter your first and last name.';
+  if (!f.email.trim() || !f.email.includes('@')) return 'Please enter a valid email address.';
+  if (f.password.length < 8) return 'Password must be at least 8 characters.';
+  if (f.password !== f.confirmPassword) return 'Passwords do not match.';
+  if (!f.acceptedTerms) return 'Please accept the Privacy Policy and Terms to continue.';
+  return null;
+}
+function handleLoginSubmit() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const err = validateLogin(email, password);
+  if (err) { ui.loginError = err; render(); return; }
+  ui.loginError = '';
+  doLogin(email);
+}
+function handleSignUpSubmit() {
+  const f = {
+    firstName: document.getElementById('su-first').value,
+    lastName: document.getElementById('su-last').value,
+    email: document.getElementById('su-email').value,
+    password: document.getElementById('su-password').value,
+    confirmPassword: document.getElementById('su-confirm').value,
+    acceptedTerms: document.getElementById('su-terms').checked,
+  };
+  const err = validateSignUp(f);
+  if (err) { ui.signupError = err; render(); return; }
+  ui.signupError = '';
+  doSignUp(f);
+}
+function handleForgotSubmit() {
+  ui.forgotEmail = document.getElementById('forgot-email').value;
+  ui.forgotSent = true;
+  render();
+}
+
+const SCREENS = {
+  splash: () => {
+    setTimeout(() => { if (state.screen === 'splash') navigate('welcome'); }, 1600);
+    return `
+      <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy);color:#fff;padding:0 32px;text-align:center;">
+        <div style="width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+          <span style="font-size:24px;font-weight:700;">P</span>
+        </div>
+        <h1 style="font-size:24px;font-weight:700;letter-spacing:-0.01em;">PARITY</h1>
+        <p style="font-size:14px;color:rgba(255,255,255,.5);margin-top:6px;">Compensation intelligence for professionals</p>
+      </div>`;
+  },
+
+  welcome: () => `
+    <div style="min-height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:40px 24px;">
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="chip" style="margin-bottom:32px;">P</div>
+        <h1 style="font-size:28px;font-weight:700;line-height:1.25;letter-spacing:-0.01em;">Know your worth,<br>with precision.</h1>
+        <p class="text-muted" style="margin-top:12px;font-size:15px;line-height:1.6;">PARITY benchmarks your compensation against verified peers in private markets, so you always negotiate from a position of data.</p>
+      </div>
+      <div class="stack" style="gap:12px;">
+        ${button('Create Account', { onclick: "navigate('signup')" })}
+        ${button('Log In', { variant: 'secondary', onclick: "navigate('login')" })}
+      </div>
+    </div>`,
+
+  login: () => `
+    ${topBar('Log In', { onBack: "navigate('welcome')" })}
+    <div class="px py-top" style="display:flex;flex-direction:column;min-height:calc(100% - 65px);padding-bottom:32px;">
+      <div class="stack">
+        <div>
+          <label class="field-label">Email</label>
+          <input id="login-email" class="text-input" type="email" value="james.carter@example.com">
+        </div>
+        <div>
+          <label class="field-label">Password</label>
+          <input id="login-password" class="text-input" type="password" placeholder="Enter any password">
+        </div>
+        ${ui.loginError ? `<p style="color:var(--bad);font-size:13px;">${esc(ui.loginError)}</p>` : ''}
+        <button class="btn-link" style="align-self:flex-start;" onclick="navigate('forgotPassword')">Forgot Password?</button>
+      </div>
+      <div style="flex:1;"></div>
+      <div style="padding-top:24px;">${button('Sign In', { onclick: 'handleLoginSubmit()' })}</div>
+    </div>`,
+
+  signup: () => `
+    ${topBar('Create Account', { onBack: "navigate('welcome')" })}
+    <div class="px py-top" style="display:flex;flex-direction:column;padding-bottom:32px;">
+      <div class="stack">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><label class="field-label">First Name</label><input id="su-first" class="text-input" type="text"></div>
+          <div><label class="field-label">Last Name</label><input id="su-last" class="text-input" type="text"></div>
+        </div>
+        <div><label class="field-label">Email</label><input id="su-email" class="text-input" type="email"></div>
+        <div><label class="field-label">Password</label><input id="su-password" class="text-input" type="password"></div>
+        <div><label class="field-label">Confirm Password</label><input id="su-confirm" class="text-input" type="password"></div>
+        <label class="checkbox-row">
+          <input id="su-terms" type="checkbox">
+          <span class="text-sm" style="color:var(--charcoal);">I agree to PARITY&rsquo;s Privacy Policy and Terms of Service.</span>
+        </label>
+        ${ui.signupError ? `<p style="color:var(--bad);font-size:13px;">${esc(ui.signupError)}</p>` : ''}
+      </div>
+      <div style="padding-top:24px;">${button('Create Account', { onclick: 'handleSignUpSubmit()' })}</div>
+    </div>`,
+
+  forgotPassword: () => `
+    ${topBar('Forgot Password', { showBack: true, onBack: "navigate('login')" })}
+    <div class="px py-top" style="display:flex;flex-direction:column;padding-bottom:32px;min-height:calc(100% - 65px);">
+      ${ui.forgotSent ? `
+        <div class="center-col" style="flex:1;justify-content:center;">
+          <div class="success-badge" style="margin-bottom:16px;">${icon('checkBig')}</div>
+          <p style="font-size:16px;font-weight:600;">Check your email</p>
+          <p class="text-muted text-sm" style="margin-top:6px;max-width:260px;">If an account exists for ${esc(ui.forgotEmail || 'that address')}, we&rsquo;ve sent password reset instructions.</p>
+          <div style="width:100%;margin-top:32px;">${button('Back to Log In', { variant: 'secondary', onclick: "navigate('login')" })}</div>
+        </div>` : `
+        <p class="text-muted text-sm" style="margin-bottom:20px;">Enter the email associated with your account and we&rsquo;ll send you a link to reset your password.</p>
+        <label class="field-label">Email</label>
+        <input id="forgot-email" class="text-input" type="email">
+        <div style="flex:1;"></div>
+        <div style="padding-top:24px;">${button('Send Reset Link', { onclick: 'handleForgotSubmit()' })}</div>`}
+    </div>`,
+
+  /* ===================== Home ===================== */
+  home: () => `
+    <div class="px" style="padding-top:32px;padding-bottom:32px;">
+      <p class="text-muted" style="font-size:15px;">Good morning,</p>
+      <h1 style="font-size:24px;font-weight:700;letter-spacing:-0.01em;margin-top:2px;">${esc(state.authUser.firstName)}</h1>
+      <div class="stack" style="margin-top:24px;">
+        ${statCard('Your Total Compensation', fmtCurrency(state.comp.current.total), { accent: true })}
+        <div class="stat-grid">
+          ${statCard('Market Median', fmtCurrency(MARKET_MEDIAN))}
+          ${statCard('Percentile', ordinal(PERCENTILE))}
+        </div>
+        ${card(`
+          <p class="stat-label">Peer Group</p>
+          <p style="font-size:15px;font-weight:600;margin-top:8px;">${esc(PEER_GROUP.role)}</p>
+          <p class="text-muted text-sm" style="margin-top:2px;">${esc(PEER_GROUP.location)} &middot; ${esc(PEER_GROUP.sector)}</p>
+        `)}
+        <p class="text-muted text-sm" style="text-align:center;">Last Updated &middot; ${esc(state.comp.lastUpdated)}</p>
+        <div class="stack" style="gap:12px;margin-top:8px;">
+          ${button('View My Benchmark', { onclick: "navigate('results')" })}
+          ${button('Update My Compensation', { variant: 'secondary', onclick: "navigate('benchmarkStart')" })}
+        </div>
+      </div>
+    </div>`,
+
+  /* ===================== Benchmark flow ===================== */
+  benchmarkStart: () => `
+    ${topBar('Start Benchmark', { onBack: "navigate('home')" })}
+    <div class="px py-top" style="padding-bottom:32px;display:flex;flex-direction:column;">
+      <h2 style="font-size:20px;font-weight:700;letter-spacing:-0.01em;">15 quick questions</h2>
+      <p class="text-muted text-sm" style="margin-top:8px;line-height:1.6;">We&rsquo;ll ask you about your role and your compensation to benchmark you against a matched peer group. It takes about 3 minutes.</p>
+      <div class="stack" style="gap:12px;margin-top:24px;">
+        ${['Role, seniority and location', 'Employer and strategy details', 'Base salary, bonus and long-term incentives'].map((s, i) => card(`
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;flex-shrink:0;">${i + 1}</span>
+            <span style="font-size:14px;color:var(--charcoal);">${s}</span>
+          </div>
+        `, { style: 'padding:16px 20px;' })).join('')}
+      </div>
+      <div style="flex:1;"></div>
+      <div style="margin-top:24px;">${button('Begin Questionnaire', { onclick: 'startBenchmark()' })}</div>
+    </div>`,
+
+  questionnaire: () => {
+    const q = QUESTIONS[state.q.stepIndex];
+    const valid = isAnswerValid(q);
+    return `
+      <div class="px" style="padding-top:24px;padding-bottom:32px;display:flex;flex-direction:column;min-height:100%;">
+        ${progressBar(state.q.stepIndex + 1, QUESTIONS.length)}
+        <div style="margin-top:28px;flex:1;">
+          <h2 style="font-size:20px;font-weight:700;letter-spacing:-0.01em;">${esc(q.label)}</h2>
+          ${q.helpText ? `<p class="text-muted text-sm" style="margin-top:6px;">${esc(q.helpText)}</p>` : ''}
+          <div id="q-control" style="margin-top:20px;">${renderQuestionControl(q)}</div>
+        </div>
+        <div class="btn-row" style="padding-top:24px;">
+          <button class="btn btn-secondary grow-1" onclick="qBack()">Back</button>
+          <button id="q-next-btn" class="btn btn-primary grow-2" ${valid ? '' : 'disabled'} onclick="qNext()">${state.q.stepIndex === QUESTIONS.length - 1 ? 'Review Answers' : 'Next'}</button>
+        </div>
+      </div>`;
+  },
+
+  reviewAnswers: () => `
+    ${topBar('Review Answers', { onBack: "navigate('questionnaire')" })}
+    <div class="px py-top" style="padding-bottom:32px;">
+      ${card(QUESTIONS.map((q, i) => `
+        <div class="card-row" style="align-items:flex-start;">
+          <div style="min-width:0;">
+            <p class="stat-label">${esc(q.label)}</p>
+            <p style="font-size:15px;margin-top:2px;">${esc(formatAnswerForReview(q))}</p>
+          </div>
+          <button class="btn-link" onclick="qEdit(${i})">Edit</button>
+        </div>`).join(''), { flat: true })}
+      <div style="margin-top:24px;">${button('Submit Benchmark', { onclick: 'submitBenchmark()' })}</div>
+    </div>`,
+
+  submitting: () => `
+    <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;text-align:center;">
+      <div class="spinner"></div>
+      <p style="font-size:16px;font-weight:600;margin-top:20px;">Preparing your benchmark…</p>
+      <p class="text-muted text-sm" style="margin-top:6px;max-width:240px;">We&rsquo;re comparing your compensation against your matched peer group.</p>
+    </div>`,
+
+  results: () => `
+    ${topBar('Benchmark Results', { showBack: false })}
+    <div class="px py-top stack" style="padding-bottom:32px;">
+      ${statCard('Your Total Compensation', fmtCurrency(state.comp.current.total), { accent: true })}
+      <div class="stat-grid">
+        ${statCard('Market Median', fmtCurrency(MARKET_MEDIAN))}
+        ${statCard('Percentile', ordinal(PERCENTILE))}
+      </div>
+      ${card(`
+        <p class="stat-label">Peer Group</p>
+        <p style="font-size:15px;font-weight:600;margin-top:8px;">${esc(PEER_GROUP.role)}</p>
+        <p class="text-muted text-sm" style="margin-top:2px;">${esc(PEER_GROUP.location)} &middot; ${esc(PEER_GROUP.sector)}</p>
+      `)}
+      ${card(`<p class="stat-label" style="margin-bottom:16px;">Comparison</p>${comparisonBarsHTML([
+        { label: 'You', value: state.comp.current.total, highlight: true },
+        { label: 'Market Median', value: MARKET_MEDIAN },
+        { label: 'Peer Group', value: Math.round(MARKET_MEDIAN * 1.03) },
+      ])}`)}
+      ${button('View Benchmark Detail', { onclick: "navigate('breakdown')" })}
+    </div>`,
+
+  breakdown: () => {
+    const c = state.comp.current;
+    const rows = [
+      ['Base Salary', fmtCurrency(c.base)], ['Bonus', fmtCurrency(c.bonus)],
+      ['Deferral', fmtCurrency(c.deferral)], ['LTIP', fmtCurrency(c.ltip)],
+      ['Carry', fmtCurrencyOrNR(c.carry)], ['Co-investment', fmtCurrencyOrNR(c.coInvestment)],
+    ];
+    return `
+      ${topBar('Compensation Breakdown', { onBack: "navigate('results')" })}
+      <div class="px py-top stack" style="padding-bottom:32px;">
+        ${card(rows.map(([l, v]) => `
+          <div class="card-row"><span style="font-size:15px;color:var(--charcoal);">${l}</span><span style="font-size:15px;font-weight:600;">${v}</span></div>
+        `).join('') + `<div class="card-row" style="background:var(--bg);"><span style="font-size:15px;font-weight:600;">Total Compensation</span><span style="font-size:17px;font-weight:700;">${fmtCurrency(c.total)}</span></div>`, { flat: true })}
+        ${button('View Benchmark Detail', { onclick: "navigate('benchmarkDetail')" })}
+      </div>`;
+  },
+
+  benchmarkDetail: () => `
+    ${topBar('Benchmark Detail', { onBack: "navigate('results')" })}
+    <div class="px py-top stack" style="padding-bottom:32px;">
+      ${statCard('Your Compensation', fmtCurrency(state.comp.current.total), { accent: true })}
+      <div class="stat-grid">
+        ${statCard('Market Median', fmtCurrency(MARKET_MEDIAN))}
+        ${statCard('Percentile', ordinal(PERCENTILE), { sublabel: PEER_GROUP.role })}
+      </div>
+      ${card(`<p class="stat-label" style="margin-bottom:12px;">Distribution</p>${distributionChartSVG(PERCENTILE)}`)}
+      ${card(BENCHMARK_DIMENSIONS.map((d) => `
+        <div class="card-row"><span class="text-muted text-sm">${d.label}</span><span style="font-size:15px;font-weight:500;">${d.value}</span></div>
+      `).join(''), { flat: true })}
+      ${card(`
+        <div class="card-row" style="border:none;padding:0;margin-bottom:12px;"><span class="text-muted text-sm">Data Period</span><span style="font-size:15px;font-weight:500;">${DATA_PERIOD}</span></div>
+        <div class="card-row" style="border:none;padding:0;"><span class="text-muted text-sm">Sample Size</span><span style="font-size:15px;font-weight:500;">${SAMPLE_SIZE_LABEL}</span></div>
+      `)}
+      ${card(`<p class="stat-label" style="margin-bottom:8px;">Methodology</p><p class="text-sm" style="color:var(--charcoal);line-height:1.6;">${METHODOLOGY}</p>`)}
+    </div>`,
+
+  history: () => `
+    ${topBar('History', { showBack: false })}
+    <div class="px py-top stack" style="padding-bottom:32px;">
+      ${card(`<p class="stat-label" style="margin-bottom:12px;">Total Compensation Trend</p>${trendLineChartSVG(state.comp.history)}`)}
+      ${card(state.comp.history.map((r, i, arr) => {
+        const prev = arr[i - 1];
+        const yoy = prev ? calcYoY(prev.total, r.total) : null;
+        return `
+        <div class="card-row">
+          <span style="font-size:15px;font-weight:500;">${r.year}</span>
+          <div style="text-align:right;">
+            <p style="font-size:15px;font-weight:600;">${fmtCurrency(r.total)}</p>
+            ${yoy !== null ? `<p class="text-sm" style="margin-top:2px;font-weight:500;color:${yoy >= 0 ? 'var(--good)' : 'var(--bad)'};">${fmtPercent(yoy)} YoY</p>` : ''}
+          </div>
+        </div>`;
+      }).join(''), { flat: true })}
+    </div>`,
+
+  /* ===================== Annual update flow ===================== */
+  updateIntro: () => `
+    ${topBar('Annual Update', { onBack: "navigate('home')" })}
+    <div class="px py-top" style="padding-bottom:32px;display:flex;flex-direction:column;">
+      ${card(`<p style="color:#fff;font-size:15px;font-weight:500;line-height:1.6;">Your annual PARITY benchmark is ready to be updated.</p>`, { dark: true })}
+      <p class="text-muted text-sm" style="margin-top:20px;line-height:1.6;">We&rsquo;ll walk you through reviewing last year&rsquo;s information and updating your current compensation to refresh your benchmark.</p>
+      <div style="flex:1;"></div>
+      <div style="margin-top:24px;">${button('Open Update', { onclick: "navigate('updateReviewPrevious')" })}</div>
+    </div>`,
+
+  updateReviewPrevious: () => {
+    const c = state.comp.current;
+    const rows = [
+      ['Base Salary', fmtCurrency(c.base)], ['Bonus', fmtCurrency(c.bonus)],
+      ['Deferral', fmtCurrency(c.deferral)], ['LTIP', fmtCurrency(c.ltip)],
+      ['Carry', fmtCurrencyOrNR(c.carry)], ['Co-investment', fmtCurrencyOrNR(c.coInvestment)],
+    ];
+    return `
+      ${topBar('Previous Information', { onBack: "navigate('updateIntro')" })}
+      <div class="px py-top" style="padding-bottom:32px;display:flex;flex-direction:column;">
+        <p class="text-muted text-sm" style="margin-bottom:12px;">${c.year} Total Compensation</p>
+        ${card(rows.map(([l, v]) => `<div class="card-row"><span class="text-sm" style="color:var(--charcoal);">${l}</span><span style="font-size:15px;font-weight:500;">${v}</span></div>`).join('') +
+          `<div class="card-row" style="background:var(--bg);"><span style="font-size:15px;font-weight:600;">Total</span><span style="font-size:17px;font-weight:700;">${fmtCurrency(c.total)}</span></div>`, { flat: true })}
+        <div style="flex:1;"></div>
+        <div style="margin-top:24px;">${button('Update Compensation', { onclick: "startUpdateDraft(); navigate('updateForm')" })}</div>
+      </div>`;
+  },
+
+  updateForm: () => {
+    const d = state.comp.updateDraft;
+    function currencyRow(label, field) {
+      return `
+        <div><label class="field-label">${label}</label>
+        <div class="currency-field"><span>£</span><input type="number" min="0" value="${d[field]}" oninput="setDraftField('${field}', this.value === '' ? 0 : Number(this.value))"></div></div>`;
+    }
+    function notReportedRow(label, field) {
+      const reported = d[field] !== 'Not Reported';
+      return `
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <label class="field-label" style="margin:0;">${label}</label>
+            <button class="btn-link" style="font-size:12px;" onclick="toggleDraftNotReported('${field}')">${reported ? 'Mark Not Reported' : 'Add Value'}</button>
+          </div>
+          ${reported
+            ? `<div class="currency-field"><span>£</span><input type="number" min="0" value="${d[field]}" oninput="setDraftField('${field}', this.value === '' ? 0 : Number(this.value))"></div>`
+            : `<div style="border:1px dashed var(--border);border-radius:12px;background:var(--bg);padding:14px 16px;color:var(--muted);font-size:15px;">Not Reported</div>`}
+        </div>`;
+    }
+    return `
+      ${topBar('Update Compensation', { onBack: "navigate('updateReviewPrevious')" })}
+      <div class="px py-top stack" style="padding-bottom:32px;">
+        ${currencyRow('Base Salary', 'base')}
+        ${currencyRow('Bonus', 'bonus')}
+        ${currencyRow('Deferral', 'deferral')}
+        ${currencyRow('LTIP', 'ltip')}
+        ${notReportedRow('Carry', 'carry')}
+        ${notReportedRow('Co-investment', 'coInvestment')}
+        <div style="margin-top:8px;">${button('Review', { onclick: "navigate('updateReview')" })}</div>
+      </div>`;
+  },
+
+  updateReview: () => {
+    const cur = state.comp.current, d = state.comp.updateDraft;
+    const change = calcYoY(cur.total, d.total);
+    const rows = [
+      ['Base Salary', fmtCurrency(d.base)], ['Bonus', fmtCurrency(d.bonus)],
+      ['Deferral', fmtCurrency(d.deferral)], ['LTIP', fmtCurrency(d.ltip)],
+      ['Carry', fmtCurrencyOrNR(d.carry)], ['Co-investment', fmtCurrencyOrNR(d.coInvestment)],
+    ];
+    return `
+      ${topBar('Review Update', { onBack: "navigate('updateForm')" })}
+      <div class="px py-top stack" style="padding-bottom:32px;">
+        ${card(`
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div><p class="stat-label">${cur.year} Total Compensation</p><p style="font-size:18px;font-weight:700;margin-top:4px;">${fmtCurrency(cur.total)}</p></div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="color:var(--muted);">${icon('arrowRight')}</svg>
+            <div style="text-align:right;"><p class="stat-label">${d.year} Total Compensation</p><p style="font-size:18px;font-weight:700;margin-top:4px;">${fmtCurrency(d.total)}</p></div>
+          </div>
+          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;">
+            <span class="text-sm text-muted">Change</span>
+            <span class="text-sm" style="font-weight:600;color:${change >= 0 ? 'var(--good)' : 'var(--bad)'};">${fmtPercent(change)}</span>
+          </div>
+        `)}
+        ${card(rows.map(([l, v]) => `<div class="card-row"><span class="text-sm" style="color:var(--charcoal);">${l}</span><span style="font-size:15px;font-weight:500;">${v}</span></div>`).join(''), { flat: true })}
+        ${button('Submit', { onclick: 'submitUpdate()' })}
+      </div>`;
+  },
+
+  updateSubmitting: () => `
+    <div style="min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;text-align:center;">
+      <div class="spinner"></div>
+      <p style="font-size:16px;font-weight:600;margin-top:20px;">Updating your benchmark…</p>
+      <p class="text-muted text-sm" style="margin-top:6px;max-width:240px;">We&rsquo;re comparing your compensation against your matched peer group.</p>
+    </div>`,
+
+  updateConfirmation: () => {
+    const cur = state.comp.current;
+    const prev = state.comp.history[state.comp.history.length - 2];
+    return `
+      <div class="px center-col" style="padding-top:48px;padding-bottom:32px;">
+        <div class="success-badge" style="margin-bottom:20px;">${icon('checkBig')}</div>
+        <h1 style="font-size:20px;font-weight:700;letter-spacing:-0.01em;">Your benchmark has been updated.</h1>
+        <div style="width:100%;margin-top:28px;text-align:left;">
+          ${card(`
+            <div style="display:flex;justify-content:space-between;">
+              <div><p class="stat-label">${prev ? prev.year : cur.year - 1} Total Compensation</p><p style="font-size:16px;font-weight:700;margin-top:4px;">${prev ? fmtCurrency(prev.total) : '—'}</p></div>
+              <div style="text-align:right;"><p class="stat-label">${cur.year} Total Compensation</p><p style="font-size:16px;font-weight:700;margin-top:4px;">${fmtCurrency(cur.total)}</p></div>
+            </div>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;">
+              <span class="text-sm text-muted">Change</span>
+              <span class="text-sm" style="font-weight:600;color:${state.comp.lastYoY >= 0 ? 'var(--good)' : 'var(--bad)'};">${fmtPercent(state.comp.lastYoY)}</span>
+            </div>
+          `)}
+        </div>
+        <div style="flex:1;"></div>
+        <div style="width:100%;margin-top:32px;">${button('View Updated Benchmark', { onclick: "navigate('results')" })}</div>
+      </div>`;
+  },
+
+  /* ===================== Notifications ===================== */
+  notifications: () => `
+    ${topBar('Notifications', { showBack: false })}
+    ${state.notifications.length === 0
+      ? `<div class="center-col" style="padding:64px 24px;"><p style="font-weight:600;">You're all caught up</p><p class="text-muted text-sm" style="margin-top:4px;">New notifications about your benchmark will appear here.</p></div>`
+      : state.notifications.map((n) => `
+        <button class="notif-item" onclick="openNotification('${n.id}','${n.kind}')">
+          <span class="notif-dot ${n.read ? '' : 'unread'}"></span>
+          <div style="flex:1;min-width:0;">
+            <p class="notif-title ${n.read ? 'read' : 'unread'}">${esc(n.title)}</p>
+            <p class="notif-body">${esc(n.body)}</p>
+            <p class="notif-date">${esc(n.date)}</p>
+          </div>
+        </button>`).join('')}`,
+
+  /* ===================== Profile ===================== */
+  profile: () => `
+    ${topBar('Profile', { showBack: false })}
+    <div class="px py-top stack" style="padding-bottom:32px;">
+      ${card(`
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="avatar">${state.authUser.firstName[0]}${state.authUser.lastName[0]}</div>
+          <div style="min-width:0;">
+            <p style="font-size:16px;font-weight:600;">${esc(state.authUser.firstName)} ${esc(state.authUser.lastName)}</p>
+            <p class="text-muted text-sm">${esc(state.authUser.jobTitle)}</p>
+            <p class="text-muted text-sm">${esc(state.authUser.location)}</p>
+          </div>
+        </div>`)}
+      ${card([
+        ['Personal Information', 'profilePersonal'], ['Professional Information', 'profileProfessional'],
+        ['Notification Preferences', 'profileNotifications'], ['Privacy', 'profilePrivacy'], ['Security', 'profileSecurity'],
+      ].map(([label, screen]) => `
+        <button class="card-row" style="width:100%;background:none;border:none;border-bottom:1px solid var(--border);cursor:pointer;text-align:left;" onclick="navigate('${screen}')">
+          <span style="font-size:15px;">${label}</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="color:var(--muted);">${icon('chevronRight')}</svg>
+        </button>`).join(''), { flat: true })}
+      <button class="btn btn-danger" onclick="doSignOut()">Sign Out</button>
+    </div>`,
+
+  profilePersonal: () => `
+    ${topBar('Personal Information', { onBack: "navigate('profile')" })}
+    <div class="px py-top" style="padding-bottom:32px;">
+      ${card([
+        ['First Name', state.authUser.firstName], ['Last Name', state.authUser.lastName],
+        ['Email', state.authUser.email], ['Location', state.authUser.location],
+      ].map(([l, v]) => `<div style="padding:14px 20px;border-bottom:1px solid var(--border);"><p class="stat-label">${l}</p><p style="font-size:15px;margin-top:2px;">${esc(v)}</p></div>`).join(''), { flat: true })}
+    </div>`,
+
+  profileProfessional: () => `
+    ${topBar('Professional Information', { onBack: "navigate('profile')" })}
+    <div class="px py-top" style="padding-bottom:32px;">
+      ${card([
+        ['Job Title', state.authUser.jobTitle], ['Seniority', state.authUser.seniority],
+        ['Sector', state.authUser.sector], ['Location', state.authUser.location],
+      ].map(([l, v]) => `<div style="padding:14px 20px;border-bottom:1px solid var(--border);"><p class="stat-label">${l}</p><p style="font-size:15px;margin-top:2px;">${esc(v)}</p></div>`).join(''), { flat: true })}
+    </div>`,
+
+  profileNotifications: () => `
+    ${topBar('Notification Preferences', { onBack: "navigate('profile')" })}
+    <div class="px py-top" style="padding-bottom:32px;">
+      ${card([
+        ['annual', 'Annual Update Reminders', 'Be notified when your annual benchmark is ready.'],
+        ['results', 'Results Updates', 'Be notified when your benchmark results refresh.'],
+        ['market', 'Market Insights', 'Occasional insights on your peer market.'],
+      ].map(([key, label, body]) => `
+        <div class="card-row">
+          <div style="min-width:0;padding-right:12px;"><p style="font-size:15px;font-weight:500;">${label}</p><p class="text-muted text-sm" style="margin-top:2px;">${body}</p></div>
+          <button class="switch ${state.profilePrefs[key] ? 'on' : 'off'}" onclick="togglePref('${key}')"><span class="switch-knob"></span></button>
+        </div>`).join(''), { flat: true })}
+    </div>`,
+
+  profilePrivacy: () => `
+    ${topBar('Privacy', { onBack: "navigate('profile')" })}
+    <div class="px py-top stack" style="padding-bottom:32px;">
+      ${card(`<p class="text-sm" style="color:var(--charcoal);line-height:1.6;">Your individual compensation data is never shared with employers. PARITY only surfaces aggregated, anonymised benchmarks calculated across matched peer groups of at least 5 professionals.</p>`)}
+      ${card(['Privacy Policy', 'How your data is anonymised', 'Data sharing preferences', 'Request data export'].map((l) => `
+        <div class="card-row"><span style="font-size:15px;">${l}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="color:var(--muted);">${icon('chevronRight')}</svg></div>`).join(''), { flat: true })}
+    </div>`,
+
+  profileSecurity: () => `
+    ${topBar('Security', { onBack: "navigate('profile')" })}
+    <div class="px py-top stack" style="padding-bottom:32px;">
+      ${card(`
+        <div class="card-row" style="border:none;padding:0;">
+          <div><p style="font-size:15px;font-weight:500;">Face ID / Touch ID</p><p class="text-muted text-sm" style="margin-top:2px;">Use biometrics to unlock the app.</p></div>
+          <button class="switch ${state.security.faceId ? 'on' : 'off'}" onclick="toggleFaceId()"><span class="switch-knob"></span></button>
+        </div>`)}
+      ${card(['Change Password', 'Two-Factor Authentication', 'Active Sessions'].map((l) => `
+        <div class="card-row"><span style="font-size:15px;">${l}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="color:var(--muted);">${icon('chevronRight')}</svg></div>`).join(''), { flat: true })}
+    </div>`,
+};
+
+function togglePref(key) { state.profilePrefs[key] = !state.profilePrefs[key]; render(); }
+function toggleFaceId() { state.security.faceId = !state.security.faceId; render(); }
+
+/* ===================== Boot ===================== */
+render();
+
+</script>
+</body>
+</html>
